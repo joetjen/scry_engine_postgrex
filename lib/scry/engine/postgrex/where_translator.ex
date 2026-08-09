@@ -1,4 +1,4 @@
-defmodule Scry.Engine.Relational.Postgrex.WhereTranslator do
+defmodule Scry.Engine.Postgrex.WhereTranslator do
   @moduledoc """
   Translates a `Scry.Core.Query.t()`'s own `wheres` into a real SQL
   `WHERE` clause with bound `?` placeholders (renumbered to Postgres's
@@ -6,8 +6,7 @@ defmodule Scry.Engine.Relational.Postgrex.WhereTranslator do
   Postgrex.SqlCompiler` in one final pass, once the full clause and its
   parallel params list are assembled -- kept as `?` here purely so this
   module's own recursion never has to thread a running placeholder
-  counter through `{:and, ...}`/`{:or, ...}`), for `Scry.Engine.
-  Relational.Postgrex`'s own `execute/3`. All-or-nothing: `translate/2`
+  counter through `{:and, ...}`/`{:or, ...}`), for `Scry.Engine.Postgrex`'s own `execute/3`. All-or-nothing: `translate/2`
   returns `:error` the moment *any* predicate anywhere in the tree can't
   be translated, never a partial clause silently narrowing what Postgres
   returns -- there is no downstream re-verification left to catch an
@@ -178,7 +177,7 @@ defmodule Scry.Engine.Relational.Postgrex.WhereTranslator do
   # comparison to begin with) is a real Postgres-side prepare error
   # (`42804`, "collations are not supported by type ..."), not a
   # crash -- caught the same way any other `Postgrex.Error` already is,
-  # by `Scry.Engine.Relational.Postgrex.execute/3`'s own error handling.
+  # by `Scry.Engine.Postgrex.execute/3`'s own error handling.
   defp collation_suffix(op, value) when op in @ordering_ops and is_binary(value),
     do: " COLLATE \"C\""
 
@@ -206,7 +205,7 @@ defmodule Scry.Engine.Relational.Postgrex.WhereTranslator do
 
   defp resolve_value(value, _params), do: bind_value(value)
 
-  @doc "Whether `field` is a safe-to-interpolate SQL identifier -- also used by `Scry.Engine.Relational.Postgrex.SqlCompiler`."
+  @doc "Whether `field` is a safe-to-interpolate SQL identifier -- also used by `Scry.Engine.Postgrex.SqlCompiler`."
   @spec identifier?(term()) :: boolean()
   def identifier?(field), do: is_binary(field) and Regex.match?(@identifier, field)
 

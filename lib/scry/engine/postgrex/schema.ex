@@ -1,11 +1,10 @@
-defmodule Scry.Engine.Relational.Postgrex.Schema do
+defmodule Scry.Engine.Postgrex.Schema do
   @moduledoc """
   Postgres schema introspection (`information_schema.columns`),
   extracted into its own module for the same reason `Scry.Engine.
   Exqlite.Schema` is: two independent consumers share one set of
-  underlying facts and one cache. `Scry.Engine.Relational.Postgrex`'s
-  own per-query, transaction-scoped `NOT NULL` gate (`Scry.Engine.
-  Relational.Postgrex.execute/3`, re-checked on every call specifically
+  underlying facts and one cache. `Scry.Engine.Postgrex`'s
+  own per-query, transaction-scoped `NOT NULL` gate (`Scry.Engine.Postgrex.execute/3`, re-checked on every call specifically
   because a concurrent schema change mid-query must still be caught)
   and this module's own `describe_source/2` (`Scry.Core.EngineBehaviour`'s
   optional callback, consumed by `Scry.Core.TypeCheck.Introspection` --
@@ -35,7 +34,7 @@ defmodule Scry.Engine.Relational.Postgrex.Schema do
   """
 
   alias Scry.Core.EngineBehaviour
-  alias Scry.Engine.Relational.Postgrex.Conn
+  alias Scry.Engine.Postgrex.Conn
 
   @typedoc "One `information_schema.columns` row: `[column_name, data_type, is_nullable]`."
   @type column_row :: [String.t()]

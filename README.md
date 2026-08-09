@@ -1,4 +1,4 @@
-# scry_engine_relational_postgrex
+# scry_engine_postgrex
 
 A real [`Scry.Core.EngineBehaviour`](https://github.com/joetjen/scry_core)
 implementation over [PostgreSQL](https://www.postgresql.org/) via
@@ -18,7 +18,7 @@ for exactly what's generic between the two versus what needed real
 redesign for Postgres's own strict typing, connection pooling, and
 `information_schema`-based introspection.
 
-Source: <https://github.com/joetjen/scry_engine_relational_postgrex>.
+Source: <https://github.com/joetjen/scry_engine_postgrex>.
 Specs live in the separate
 [`scry`](https://github.com/joetjen/scry) repository; the behaviour
 this implements lives in
@@ -27,7 +27,7 @@ this implements lives in
 ## Usage
 
 ```elixir
-{:ok, conn} = Scry.Engine.Relational.Postgrex.Conn.open(
+{:ok, conn} = Scry.Engine.Postgrex.Conn.open(
   hostname: "localhost",
   username: "postgres",
   password: "postgres",
@@ -35,11 +35,11 @@ this implements lives in
 )
 
 {:ok, query} = Scry.Core.parse(~s(SELECT users WHERE id = 1 { name }))
-{:ok, cursor} = Scry.Core.Executor.run(query, Scry.Engine.Relational.Postgrex, conn)
+{:ok, cursor} = Scry.Core.Executor.run(query, Scry.Engine.Postgrex, conn)
 rows = Scry.Core.Cursor.to_list(cursor)
 # rows == [%{"name" => "Alice"}]
 
-Scry.Engine.Relational.Postgrex.Conn.close(conn)
+Scry.Engine.Postgrex.Conn.close(conn)
 ```
 
 `Conn.open/1` starts a real `postgrex` connection pool and is meant to
@@ -50,12 +50,11 @@ queries.
 
 ### What gets pushed down
 
-`Scry.Engine.Relational.Postgrex.SqlCompiler` translates a flat query
+`Scry.Engine.Postgrex.SqlCompiler` translates a flat query
 into SQL only when it can do so *completely* — every `select` item is a
 bare field (or, for a `GROUP BY` query, one of `sum`/`avg`/`count`/
 `min`/`max`/`count(distinct ...)` over a bare field), `wheres`
-translates fully (recursive `:cmp`/`:in`/`:and`/`:or`/`:not`, `Scry.
-Engine.Relational.Postgrex.WhereTranslator`), and there is no `HAVING`/
+translates fully (recursive `:cmp`/`:in`/`:and`/`:or`/`:not`, `Scry.Engine.Postgrex.WhereTranslator`), and there is no `HAVING`/
 `ROLLUP`/`CUBE`/window function/nested `SELECT`/`WITH`-bound source
 anywhere in the query. Anything that doesn't fully qualify is a clean
 `{:error, {:unsupported, detail}}` — never a partial pushdown silently
@@ -113,7 +112,7 @@ follow-on, not an oversight.
 ```elixir
 def deps do
   [
-    {:scry_engine_relational_postgrex, "~> 0.1"}
+    {:scry_engine_postgrex, "~> 0.1"}
   ]
 end
 ```
@@ -129,7 +128,7 @@ mix test
 
 Connection details default to the `docker-compose.yml` service
 (`localhost:5432`, user/password `scry`, database
-`scry_engine_relational_postgrex_test`) — override via `PGHOST`/
+`scry_engine_postgrex_test`) — override via `PGHOST`/
 `PGPORT`/`PGUSER`/`PGPASSWORD`/`PGDATABASE` to point at a different
 Postgres instead.
 
@@ -138,4 +137,4 @@ Postgres instead.
 Documentation is generated with [ExDoc](https://github.com/elixir-lang/ex_doc):
 
 - Released versions are published to [HexDocs](https://hexdocs.pm) once the
-  package ships, at <https://hexdocs.pm/scry_engine_relational_postgrex>.
+  package ships, at <https://hexdocs.pm/scry_engine_postgrex>.

@@ -1,6 +1,6 @@
-defmodule Scry.Engine.Relational.Postgrex.AggregateTest do
+defmodule Scry.Engine.Postgrex.AggregateTest do
   @moduledoc """
-  `Scry.Engine.Relational.Postgrex`'s `GROUP BY`/aggregate pushdown --
+  `Scry.Engine.Postgrex`'s `GROUP BY`/aggregate pushdown --
   confirms a fully-eligible `GROUP BY`/aggregate query genuinely pushes
   down to native SQL and produces correct results (`sum`/`avg`/`count`/
   `min`/`max`/`count(distinct ...)`, a flat aggregate, a flat aggregate
@@ -29,8 +29,8 @@ defmodule Scry.Engine.Relational.Postgrex.AggregateTest do
   use ExUnit.Case, async: true
 
   alias Scry.Core.{Cursor, Executor, Query, Rational, Row}
-  alias Scry.Engine.Relational.Postgrex, as: Engine
-  alias Scry.Engine.Relational.Postgrex.{Conn, TestConn}
+  alias Scry.Engine.Postgrex, as: Engine
+  alias Scry.Engine.Postgrex.{Conn, TestConn}
 
   setup do
     pool = TestConn.start_pool()

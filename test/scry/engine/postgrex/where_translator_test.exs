@@ -1,6 +1,6 @@
-defmodule Scry.Engine.Relational.Postgrex.WhereTranslatorTest do
+defmodule Scry.Engine.Postgrex.WhereTranslatorTest do
   @moduledoc """
-  `Scry.Engine.Relational.Postgrex.WhereTranslator` -- confirms exactly
+  `Scry.Engine.Postgrex.WhereTranslator` -- confirms exactly
   which predicate shapes translate into real SQL (every `:cmp` op but
   `:match`, `:in`, a full recursive `:and`/`:or`/`:not` tree, a
   single-segment identifier-safe field, a plain string/integer/float/
@@ -25,7 +25,7 @@ defmodule Scry.Engine.Relational.Postgrex.WhereTranslatorTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
 
-  alias Scry.Engine.Relational.Postgrex.WhereTranslator
+  alias Scry.Engine.Postgrex.WhereTranslator
 
   describe "translatable shapes" do
     test "an empty wheres list produces no clause at all" do

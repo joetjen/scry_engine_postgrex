@@ -1,4 +1,4 @@
-defmodule Scry.Engine.Relational.Postgrex.TestConn do
+defmodule Scry.Engine.Postgrex.TestConn do
   @moduledoc """
   Shared test connection helper -- reads env-var-overridable connection
   options (defaulting to this package's own `docker-compose.yml`
@@ -45,7 +45,7 @@ defmodule Scry.Engine.Relational.Postgrex.TestConn do
       port: String.to_integer(System.get_env("PGPORT", "5432")),
       username: System.get_env("PGUSER", "scry"),
       password: System.get_env("PGPASSWORD", "scry"),
-      database: System.get_env("PGDATABASE", "scry_engine_relational_postgrex_test")
+      database: System.get_env("PGDATABASE", "scry_engine_postgrex_test")
     ]
   end
 

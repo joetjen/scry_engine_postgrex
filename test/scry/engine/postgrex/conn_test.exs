@@ -1,12 +1,12 @@
-defmodule Scry.Engine.Relational.Postgrex.ConnTest do
+defmodule Scry.Engine.Postgrex.ConnTest do
   @moduledoc """
-  `Scry.Engine.Relational.Postgrex.Conn` -- confirms `open/1` starts a
+  `Scry.Engine.Postgrex.Conn` -- confirms `open/1` starts a
   real `postgrex` pool and `close/1` actually stops it.
   """
 
   use ExUnit.Case, async: true
 
-  alias Scry.Engine.Relational.Postgrex.{Conn, TestConn}
+  alias Scry.Engine.Postgrex.{Conn, TestConn}
 
   test "open/1 starts and wraps a real postgrex pool" do
     assert {:ok, %Conn{pool: pool} = conn} = Conn.open(TestConn.connection_opts())

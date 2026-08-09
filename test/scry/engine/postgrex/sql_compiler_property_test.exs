@@ -1,6 +1,6 @@
-defmodule Scry.Engine.Relational.Postgrex.SqlCompilerPropertyTest do
+defmodule Scry.Engine.Postgrex.SqlCompilerPropertyTest do
   @moduledoc """
-  `Scry.Engine.Relational.Postgrex`'s plain `WHERE` pushdown -- proves,
+  `Scry.Engine.Postgrex`'s plain `WHERE` pushdown -- proves,
   across randomly generated predicates and rows (all `NOT NULL`
   columns, so every generated predicate is pushdown-eligible and the
   property isolates translation correctness specifically, not the
@@ -22,8 +22,8 @@ defmodule Scry.Engine.Relational.Postgrex.SqlCompilerPropertyTest do
   use ExUnitProperties
 
   alias Scry.Core.{Query, QueryOps, Row}
-  alias Scry.Engine.Relational.Postgrex, as: Engine
-  alias Scry.Engine.Relational.Postgrex.{Conn, TestConn}
+  alias Scry.Engine.Postgrex, as: Engine
+  alias Scry.Engine.Postgrex.{Conn, TestConn}
 
   setup do
     pool = TestConn.start_pool()

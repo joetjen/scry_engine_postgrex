@@ -1,9 +1,9 @@
-defmodule Scry.Engine.Relational.Postgrex.SchemaTest do
+defmodule Scry.Engine.Postgrex.SchemaTest do
   @moduledoc """
-  `Scry.Engine.Relational.Postgrex.Schema` -- `information_schema.
+  `Scry.Engine.Postgrex.Schema` -- `information_schema.
   columns`-based introspection, the direct Postgres counterpart to
   `Scry.Engine.Exqlite.Schema`. `verify/3` is the extracted internals
-  `Scry.Engine.Relational.Postgrex`'s own per-query `NOT NULL` gate
+  `Scry.Engine.Postgrex`'s own per-query `NOT NULL` gate
   relies on; `describe_source/2` is `Scry.Core.EngineBehaviour`'s
   optional callback.
 
@@ -13,7 +13,7 @@ defmodule Scry.Engine.Relational.Postgrex.SchemaTest do
 
   use ExUnit.Case, async: true
 
-  alias Scry.Engine.Relational.Postgrex.{Conn, Schema, TestConn}
+  alias Scry.Engine.Postgrex.{Conn, Schema, TestConn}
 
   setup do
     pool = TestConn.start_pool()

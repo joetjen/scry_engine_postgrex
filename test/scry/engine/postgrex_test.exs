@@ -1,6 +1,6 @@
-defmodule Scry.Engine.Relational.PostgrexTest do
+defmodule Scry.Engine.PostgrexTest do
   @moduledoc """
-  `Scry.Engine.Relational.Postgrex` -- confirms `execute/3` compiles a
+  `Scry.Engine.Postgrex` -- confirms `execute/3` compiles a
   plain `WHERE`/`ORDER BY`/`DISTINCT`/`LIMIT`/`OFFSET` query into one
   real SQL statement, that an unknown or unsafe (would-be SQL-injecting)
   source is a clear, tagged error rather than a crash or an executed
@@ -23,8 +23,8 @@ defmodule Scry.Engine.Relational.PostgrexTest do
   use ExUnit.Case, async: true
 
   alias Scry.Core.{Cursor, Executor, Query, Row}
-  alias Scry.Engine.Relational.Postgrex, as: Engine
-  alias Scry.Engine.Relational.Postgrex.{Conn, Schema, TestConn}
+  alias Scry.Engine.Postgrex, as: Engine
+  alias Scry.Engine.Postgrex.{Conn, Schema, TestConn}
 
   setup do
     pool = TestConn.start_pool()
@@ -276,7 +276,7 @@ defmodule Scry.Engine.Relational.PostgrexTest do
 
       # Same conn, same schema_cache -- still declines, because nothing
       # re-checks freshness automatically (a real, accepted limitation,
-      # not a bug -- see `Scry.Engine.Relational.Postgrex.Schema`'s own
+      # not a bug -- see `Scry.Engine.Postgrex.Schema`'s own
       # moduledoc).
       assert Engine.execute(conn, query, %{}) ==
                {:error, {:unsupported, {:nullable_column, ["status"]}}}
@@ -359,7 +359,7 @@ defmodule Scry.Engine.Relational.PostgrexTest do
   end
 
   describe "describe_source/2 (Scry.Core.EngineBehaviour's optional callback)" do
-    test "delegates to Scry.Engine.Relational.Postgrex.Schema.describe_source/2", %{
+    test "delegates to Scry.Engine.Postgrex.Schema.describe_source/2", %{
       conn: conn,
       table: table
     } do

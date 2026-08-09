@@ -1,4 +1,4 @@
-defmodule Scry.Engine.Relational.Postgrex.Conn do
+defmodule Scry.Engine.Postgrex.Conn do
   @moduledoc """
   Wraps an already-started `postgrex` connection pool -- opened once via
   `open/1` and meant to be reused across many `Scry.Engine.Relational.
@@ -14,8 +14,8 @@ defmodule Scry.Engine.Relational.Postgrex.Conn do
   file handle.
 
   `schema_cache` is an ETS table `open/1` creates alongside the pool --
-  `Scry.Engine.Relational.Postgrex`'s own per-query `NOT NULL` schema
-  check, and `Scry.Engine.Relational.Postgrex.Schema.describe_source/2`,
+  `Scry.Engine.Postgrex`'s own per-query `NOT NULL` schema
+  check, and `Scry.Engine.Postgrex.Schema.describe_source/2`,
   both use it to avoid re-querying `information_schema.columns` on every
   single call. Unlike SQLite's cheap, global `PRAGMA schema_version`
   read, Postgres has no equally cheap, equally global "has this table's

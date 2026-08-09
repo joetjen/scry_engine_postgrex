@@ -1,4 +1,4 @@
-defmodule Scry.Engine.Relational.Postgrex do
+defmodule Scry.Engine.Postgrex do
   @moduledoc """
   A real `Scry.Core.EngineBehaviour` implementation over PostgreSQL, via
   the `postgrex` driver -- the direct Postgres counterpart to `Scry.
@@ -8,7 +8,7 @@ defmodule Scry.Engine.Relational.Postgrex do
 
   `execute/3` compiles the *entire* flat query -- `WHERE`/`GROUP BY`/
   aggregates/`ORDER BY`/`DISTINCT`/`LIMIT`/`OFFSET`/projection -- into
-  one native SQL statement via `Scry.Engine.Relational.Postgrex.
+  one native SQL statement via `Scry.Engine.Postgrex.
   SqlCompiler`, all or nothing: that module's own moduledoc has the
   exact eligible query shapes and the real correctness work behind
   declining anything it can't (a schema-level `NOT NULL` check, run in
@@ -74,8 +74,7 @@ defmodule Scry.Engine.Relational.Postgrex do
   (`$1, $2, ...`), never string-interpolated.
 
   Connection pool lifecycle (`Postgrex.start_link/1`), schema, and
-  index creation are deliberately not this module's job: `Scry.Engine.
-  Relational.Postgrex.Conn.open/1` opens a pool once, reused across as
+  index creation are deliberately not this module's job: `Scry.Engine.Postgrex.Conn.open/1` opens a pool once, reused across as
   many `execute/3` calls as the caller likes; creating tables/indexes
   against it is entirely up to the caller (this package is schema-
   agnostic, issuing nothing but `SELECT`/`information_schema` queries).
@@ -84,7 +83,7 @@ defmodule Scry.Engine.Relational.Postgrex do
   @behaviour Scry.Core.EngineBehaviour
 
   alias Scry.Core.{CombinedQuery, EngineBehaviour, Query, QueryOps, Rational, Row}
-  alias Scry.Engine.Relational.Postgrex.{Conn, Schema, SqlCompiler}
+  alias Scry.Engine.Postgrex.{Conn, Schema, SqlCompiler}
 
   @impl true
   def execute(conn, %CombinedQuery{} = combined, params),
@@ -122,7 +121,7 @@ defmodule Scry.Engine.Relational.Postgrex do
     error -> {:error, {:query_error, error}}
   end
 
-  # `Scry.Engine.Relational.Postgrex.SqlCompiler`'s own moduledoc has
+  # `Scry.Engine.Postgrex.SqlCompiler`'s own moduledoc has
   # the full reasoning for the schema check this makes: the check and
   # the compiled query itself run inside one transaction, over the
   # *same* checked-out connection, so a schema change on another
@@ -194,7 +193,7 @@ defmodule Scry.Engine.Relational.Postgrex do
 
   @doc """
   `Scry.Core.EngineBehaviour`'s optional `describe_source/2` callback --
-  delegates straight to `Scry.Engine.Relational.Postgrex.Schema.
+  delegates straight to `Scry.Engine.Postgrex.Schema.
   describe_source/2`, which routes through the exact same per-`Conn`
   ETS cache the schema check above already uses.
   """

@@ -1,4 +1,4 @@
-defmodule Scry.Engine.Relational.Postgrex.SqlCompiler do
+defmodule Scry.Engine.Postgrex.SqlCompiler do
   @moduledoc """
   Compiles a flat `Scry.Core.Query.t()` into one native SQL statement
   -- `WHERE`/`GROUP BY`/aggregates/`ORDER BY`/`DISTINCT`/`LIMIT`/
@@ -13,8 +13,7 @@ defmodule Scry.Engine.Relational.Postgrex.SqlCompiler do
   ## What compiles
 
   Identical eligibility rules to `Scry.Engine.Exqlite.SqlCompiler`
-  (ported directly, not narrowed): `wheres` delegated to `Scry.Engine.
-  Relational.Postgrex.WhereTranslator`; a **plain** (non-aggregate)
+  (ported directly, not narrowed): `wheres` delegated to `Scry.Engine.Postgrex.WhereTranslator`; a **plain** (non-aggregate)
   query needs every `select` item to be a bare, single-segment
   `{:field, [column]}`, optionally aliased (`{:computed, alias,
   {:field, [column]}}` -- `Scry.Core.Query.from/2`'s own map-shaped
@@ -45,7 +44,7 @@ defmodule Scry.Engine.Relational.Postgrex.SqlCompiler do
   nil` null-check idiom itself is exempt, since SQL's own `IS NULL`/
   `IS NOT NULL` there already means exactly what the interpreter
   means), plus every aggregated column for an aggregate-shaped query.
-  `Scry.Engine.Relational.Postgrex.execute/3` is the one that actually
+  `Scry.Engine.Postgrex.execute/3` is the one that actually
   checks this (a real `information_schema.columns` query, so it needs
   the open connection this module doesn't have) inside the same
   transaction as the compiled query itself.
@@ -71,8 +70,7 @@ defmodule Scry.Engine.Relational.Postgrex.SqlCompiler do
   against SQLite -- Postgres's own strict typing rejects it outright,
   and `postgrex` itself raises a client-side `DBConnection.EncodeError`
   while binding the parameter (found directly, via a real property-test
-  failure while building this compiler, not assumed). `Scry.Engine.
-  Relational.Postgrex.execute/3` catches this and reports it as an
+  failure while building this compiler, not assumed). `Scry.Engine.Postgrex.execute/3` catches this and reports it as an
   ordinary `{:error, {:query_error, _}}`, exactly the "attempted and
   genuinely failed against the real backend" case `Scry.Core.
   EngineBehaviour`'s own moduledoc already documents -- so the net
@@ -83,7 +81,7 @@ defmodule Scry.Engine.Relational.Postgrex.SqlCompiler do
 
   ## Placeholder renumbering
 
-  `Scry.Engine.Relational.Postgrex.WhereTranslator` renders `?`
+  `Scry.Engine.Postgrex.WhereTranslator` renders `?`
   placeholders (SQLite-positional style, needing no numbering) purely
   so its own recursive `{:and, ...}`/`{:or, ...}` translation never has
   to thread a running counter through subtree translation. Postgres
@@ -97,7 +95,7 @@ defmodule Scry.Engine.Relational.Postgrex.SqlCompiler do
   """
 
   alias Scry.Core.Query
-  alias Scry.Engine.Relational.Postgrex.WhereTranslator
+  alias Scry.Engine.Postgrex.WhereTranslator
 
   @aggregate_names ~w(sum avg count min max)
   @identifier ~r/^[A-Za-z_][A-Za-z0-9_]*$/

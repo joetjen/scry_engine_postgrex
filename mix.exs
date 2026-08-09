@@ -1,4 +1,4 @@
-defmodule Scry.Engine.Relational.Postgrex.MixProject do
+defmodule Scry.Engine.Postgrex.MixProject do
   use Mix.Project
 
   @version "0.1.0"
@@ -13,7 +13,7 @@ defmodule Scry.Engine.Relational.Postgrex.MixProject do
 
   def project do
     [
-      app: :scry_engine_relational_postgrex,
+      app: :scry_engine_postgrex,
       version: @version,
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
@@ -21,7 +21,7 @@ defmodule Scry.Engine.Relational.Postgrex.MixProject do
       deps: deps(),
       description: description(),
       package: package(),
-      name: "Scry.Engine.Relational.Postgrex",
+      name: "Scry.Engine.Postgrex",
       docs: docs(),
       aliases: aliases(),
       test_coverage: [tool: ExCoveralls]
@@ -105,7 +105,7 @@ defmodule Scry.Engine.Relational.Postgrex.MixProject do
   defp package do
     [
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/joetjen/scry_engine_relational_postgrex"},
+      links: %{"GitHub" => "https://github.com/joetjen/scry_engine_postgrex"},
       files: ~w(lib .formatter.exs mix.exs README.md CHANGELOG.md LICENSE)
     ]
   end
@@ -113,7 +113,7 @@ defmodule Scry.Engine.Relational.Postgrex.MixProject do
   defp docs do
     [
       main: "readme",
-      source_url: "https://github.com/joetjen/scry_engine_relational_postgrex",
+      source_url: "https://github.com/joetjen/scry_engine_postgrex",
       source_ref: "v#{@version}",
       extras: extras()
     ]
