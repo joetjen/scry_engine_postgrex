@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **`ORDER BY` pushdown regression from `scry_core`'s `Query.t().order_bys` widening**: `scry_core` widened `order_bys` from `[{[String.t(), ...], :asc | :desc}]` (a bare field path) to `[{expr(), :asc | :desc}]`, so a sort key can now be any expression (e.g. the upcoming `ORDER BY relevance()`, or `ORDER BY price * quantity`) -- a real parsed `ORDER BY age` now produces `{{:field, ["age"]}, :asc}`, not `{["age"], :asc}`. This `SqlCompiler`'s `order_by_item/2` only ever matched the old bare-list shape, so *every* `ORDER BY` query -- including the ordinary single-field case -- fell through to its catch-all and was rejected as `{:unsupported, {:order_by, _}}` once this package picked up the updated `scry_core`. `order_by_item/2` now also unwraps the common `{:field, [column]}` case back to the plain column the existing identifier check already validates, while still declining (correctly) any other expression shape -- a multi-segment field, a call, arithmetic -- since this compiler gains no general expression-compilation capability from this fix, only recognition of the one new common-case wrapper. The old bare-list shape (`{[column], direction}`) is still accepted too, for any caller still constructing a `%Scry.Core.Query{}` literal directly with it (matching `Scry.Core.QueryOps`'s own backward-compatible runtime resolution).
+
 ### Changed
 
 - **Breaking (pre-release)**: renamed from `scry_engine_relational_postgrex` to `scry_engine_postgrex` (`Scry.Engine.Relational.Postgrex` → `Scry.Engine.Postgrex`) -- `impl_spec.md`'s own tier-3 adapter naming convention simplified to `scry_engine_<driver>` universally, dropping the `scry_engine_<kind>_<driver>` form entirely rather than keeping it as the default with a "kind-independent" exception (see `scry`'s own `CHANGELOG.md` for the full reasoning). This package was never released (no Hex publish, no git tag), so this is a same-round rename, not a deprecation.

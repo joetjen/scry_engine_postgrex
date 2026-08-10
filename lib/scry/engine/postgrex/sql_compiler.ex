@@ -23,7 +23,15 @@ defmodule Scry.Engine.Postgrex.SqlCompiler do
   and every `select` item either a bare/aliased field exactly matching
   a `group_bys` entry or one of `sum`/`avg`/`count`/`min`/`max` over
   exactly one bare field (`count(distinct field)` included); `order_bys`
-  entries must each be a bare, single-segment field; `distinct`/`limit`/
+  entries must each be a bare, single-segment field -- either the plain
+  `[column]` shape `Scry.Core.Query.t()` used to require, or the current
+  `{{:field, [column]}, direction}` tagged-expression shape every real
+  parsed `ORDER BY column` now produces (`Scry.Core.Query.t()`'s own
+  `order_bys` widened to `[{expr(), :asc | :desc}]` so `ORDER BY
+  relevance()`/`ORDER BY price * quantity` can parse at all -- this
+  compiler still only ever unwraps the one-field case, declining any
+  other expression shape exactly as it always declined a multi-segment
+  field); `distinct`/`limit`/
   `offset` always compile directly (`limit`/`offset` are already
   validated `non_neg_integer() | nil` by `Scry.Core.Query.t()`'s own
   type, so rendered directly into SQL text, never bound as parameters).
@@ -327,6 +335,24 @@ defmodule Scry.Engine.Postgrex.SqlCompiler do
     end
   end
 
+  # The current, real shape every parsed `ORDER BY column` produces
+  # since `Scry.Core.Query.t()`'s own `order_bys` widened to
+  # `[{expr(), :asc | :desc}]` (so `ORDER BY relevance()`/`ORDER BY
+  # price * quantity` can parse at all) -- unwrapped back to the bare
+  # column the identifier check below already validates. Any other
+  # expression shape (a call, arithmetic, a multi-segment field, a
+  # dot-access) is *not* unwrapped here: this compiler gains no general
+  # expression-compilation capability, it only recognizes this one
+  # common-case wrapper and otherwise falls through to the catch-all
+  # `:error` below, same as it always did.
+  defp order_by_item({:field, [field]}, direction) when direction in [:asc, :desc],
+    do: order_by_item([field], direction)
+
+  # The bare, single-segment-path shape `order_bys` used before the
+  # `scry_core` widening above -- kept working for any caller still
+  # constructing a `%Scry.Core.Query{}` literal directly with this
+  # older shape (`Scry.Core.QueryOps`'s own runtime resolution stays
+  # backward compatible with it too, for the same reason).
   defp order_by_item([field], direction) when direction in [:asc, :desc] do
     if WhereTranslator.identifier?(field) do
       {:ok, "#{field} #{if direction == :asc, do: "ASC", else: "DESC"}"}

@@ -146,10 +146,11 @@ defmodule Scry.Engine.PostgrexTest do
       assert {:ok, [%{"name" => "Bob"}]} = materialize(Engine.execute(conn, query, %{}))
     end
 
-    test "ORDER BY + LIMIT + OFFSET compiles and executes correctly", %{
-      conn: conn,
-      table: table
-    } do
+    test "ORDER BY + LIMIT + OFFSET compiles and executes correctly -- the old bare-path order_bys shape",
+         %{
+           conn: conn,
+           table: table
+         } do
       query = %Query{
         source: [table],
         order_bys: [{["age"], :asc}],
@@ -159,6 +160,44 @@ defmodule Scry.Engine.PostgrexTest do
       }
 
       assert {:ok, [%{"name" => "Alice"}]} = materialize(Engine.execute(conn, query, %{}))
+    end
+
+    test "ORDER BY + LIMIT + OFFSET compiles and executes correctly -- the current {:field, [col]} order_bys shape every real parsed ORDER BY produces",
+         %{
+           conn: conn,
+           table: table
+         } do
+      query = %Query{
+        source: [table],
+        order_bys: [{{:field, ["age"]}, :asc}],
+        limit: 1,
+        offset: 1,
+        select: [{:field, ["name"]}]
+      }
+
+      assert {:ok, [%{"name" => "Alice"}]} = materialize(Engine.execute(conn, query, %{}))
+    end
+
+    test "a multi-segment field ORDER BY key declines -- {:field, [...]} is only unwrapped for the single-segment case",
+         %{conn: conn, table: table} do
+      query = %Query{
+        source: [table],
+        order_bys: [{{:field, [table, "age"]}, :asc}],
+        select: [{:field, ["name"]}]
+      }
+
+      assert {:error, {:unsupported, {:order_by, _}}} = Engine.execute(conn, query, %{})
+    end
+
+    test "a call ORDER BY key (e.g. a future relevance()/window expression) declines, not compiled to SQL",
+         %{conn: conn, table: table} do
+      query = %Query{
+        source: [table],
+        order_bys: [{{:call, "relevance", []}, :desc}],
+        select: [{:field, ["name"]}]
+      }
+
+      assert {:error, {:unsupported, {:order_by, _}}} = Engine.execute(conn, query, %{})
     end
 
     test "DISTINCT compiles and executes correctly", %{conn: conn, table: table} do
