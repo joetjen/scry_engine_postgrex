@@ -18,9 +18,7 @@ for exactly what's generic between the two versus what needed real
 redesign for Postgres's own strict typing, connection pooling, and
 `information_schema`-based introspection.
 
-Source: <https://github.com/joetjen/scry_engine_postgrex>.
-Specs live in the separate
-[`scry`](https://github.com/joetjen/scry) repository; the behaviour
+Source: <https://github.com/joetjen/scry_engine_postgrex>. The behaviour
 this implements lives in
 [`scry_core`](https://github.com/joetjen/scry_core).
 

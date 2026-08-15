@@ -44,8 +44,8 @@ defmodule Scry.Engine.Postgrex.SqlCompiler do
   eval_predicate/4`'s own null-safety hard error does, and this is
   every bit as true of Postgres as of SQLite (or any other SQL engine)
   -- pushing `WHERE age > 18` straight into SQL for a genuinely `NULL`
-  column would silently exclude that row instead of raising the error
-  lang_spec.md §7 requires. `compile/2` therefore also returns the set
+  column would silently exclude that row instead of raising the
+  required error. `compile/2` therefore also returns the set
   of columns that need a schema-level `NOT NULL` guarantee before the
   compiled SQL can be trusted -- every column compared against a
   non-`nil` literal anywhere in `wheres` (the `field = nil`/`field !=

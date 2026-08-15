@@ -4,7 +4,7 @@ defmodule Scry.Engine.Postgrex.Conn do
   `open/1` and meant to be reused across many `Scry.Engine.Relational.
   Postgrex.execute/3` calls, unlike an ad-hoc adapter that opens (and
   closes) a fresh connection on every single call. Matches the
-  connection/config struct every real adapter exposes (impl_spec.md §2).
+  connection/config struct every real adapter exposes.
 
   Unlike `Scry.Engine.Exqlite.Conn`'s single raw SQLite handle, `pool`
   here is a `postgrex`/`DBConnection` pool reference (a PID or a
